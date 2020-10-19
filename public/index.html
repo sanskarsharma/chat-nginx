@@ -2,11 +2,25 @@
 <html lang="en">
 <head>
     <title>Chat Example</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
     <script type="text/javascript">
         window.onload = function () {
             let conn;
             let msg = document.getElementById("msg");
             let log = document.getElementById("log");
+            
+
             sessionStorage.setItem("sender_id", generateName());
 
             function capFirst(string) {
@@ -66,7 +80,12 @@
                 // }
 
                 var roomi = getParameterByName("r");
+                if (roomi === null) {
+                    roomi = "main"
+                }
                 console.log("joining room : ", roomi)
+                let cr = document.getElementById("chat_room");
+                cr.innerText = "chat room #" + roomi;
                 
                 conn = new WebSocket("ws://" + document.location.host + "/chat/ws/" + roomi);
                 conn.onclose = function (evt) {
@@ -93,14 +112,14 @@
             overflow: hidden;
         }
 
-        body {
+        /* body {
             overflow: hidden;
             padding: 0;
             margin: 0;
             width: 100%;
             height: 100%;
             background: gray;
-        }
+        } */
 
         #log {
             background: white;
@@ -127,10 +146,16 @@
     </style>
 </head>
 <body>
-<div id="log"></div>
-<form id="form">
-    <input type="text" id="msg" size="64" autofocus/>
-    <input type="submit" value="Send"/>
-</form>
+<div class="container-fluid">
+    <h2 id="chat_room">chat room </h2>
+</div>
+<div class="container-fluid pt-4 my-4" id="log"></div>
+<div class="container-fluid">
+    <form id="form" class="form-inline justify-content-center align-items-center">
+        <input type="text" id="msg" size="64" class="form-control mb-2 mr-sm-2 " autofocus/>
+        <button type="submit" value="Send" class="btn btn-dark mb-2 ">Send</button>
+    </form>
+</div>
+
 </body>
 </html>
