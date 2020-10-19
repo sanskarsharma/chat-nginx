@@ -60,8 +60,15 @@
 
             if (window["WebSocket"]) {
                 const params = window.location.href.split("/");
-                const roomId = params[params.length - 1];
-                conn = new WebSocket("ws://" + document.location.host + "/ws/" + getParameterByName("room_id"));
+                // var roomi = params[params.length - 1]
+                // if (roomi === null || roomi === "") {
+                //     roomi = "main";
+                // }
+
+                var roomi = getParameterByName("r");
+                console.log("joining room : ", roomi)
+                
+                conn = new WebSocket("ws://" + document.location.host + "/chat/ws/" + roomi);
                 conn.onclose = function (evt) {
                     let item = document.createElement("div");
                     item.innerHTML = "<b>Connection closed.</b>";
