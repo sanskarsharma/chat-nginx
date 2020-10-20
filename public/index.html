@@ -4,6 +4,7 @@
     <title>Chat Example</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js" integrity="sha512-B4skI5FiLurS86aioJx9VfozI1wjqrn6aTdJH+YQUmCZum/ZibPBTX55k5d9XM6EsKePDInkLVrN7vPmJxc1qA==" crossorigin="anonymous"></script>
 
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -87,10 +88,15 @@
                 let cr = document.getElementById("chat_room");
                 cr.innerText = "chat room #" + roomi;
                 
-                conn = new WebSocket("ws://" + document.location.host + "/chat/ws/" + roomi);
+                conn = new ReconnectingWebSocket("ws://" + document.location.host + "/chat/ws/" + roomi, null, {reconnectInterval: 100, maxReconnectInterval: 110, maxReconnectAttempts: 2, timeoutInterval: 1000});
+                conn.onopen = function (evt) {
+                    let item = document.createElement("div");
+                    item.innerHTML = "<b>You (" + sessionStorage.getItem("sender_id") + ") are connected.</b>";
+                    appendLog(item);
+                };
                 conn.onclose = function (evt) {
                     let item = document.createElement("div");
-                    item.innerHTML = "<b>Connection closed.</b>";
+                    item.innerHTML = "<b>Connection closed. Reconnecting ...</b>";
                     appendLog(item);
                 };
                 conn.onmessage = function (evt) {
